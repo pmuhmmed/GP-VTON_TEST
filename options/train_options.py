@@ -10,15 +10,15 @@ class TrainOptions(BaseOptions):
             '--launcher', choices=['none', 'pytorch'], default='none', help='job launcher')
         self.parser.add_argument('--local_rank', type=int, default=0)
 
-        self.parser.add_argument('--write_loss_frep', type=int, default=100,
+        self.parser.add_argument('--write_loss_frep', type=int, default=320,
                                  help='frequency of showing training results on screen')
-        self.parser.add_argument('--display_freq', type=int, default=100,
+        self.parser.add_argument('--display_freq', type=int, default=320,
                                  help='frequency of showing training results on screen')
-        self.parser.add_argument('--print_freq', type=int, default=100,
+        self.parser.add_argument('--print_freq', type=int, default=160,
                                  help='frequency of showing training results on console')
         self.parser.add_argument('--save_latest_freq', type=int,
                                  default=1000, help='frequency of saving the latest results')
-        self.parser.add_argument('--save_epoch_freq', type=int, default=20,
+        self.parser.add_argument('--save_epoch_freq', type=int, default=10,
                                  help='frequency of saving checkpoints at the end of epochs')
         self.parser.add_argument('--no_html', action='store_true',
                                  help='do not save intermediate training results to [opt.checkpoints_dir]/[opt.name]/web/')
@@ -35,7 +35,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument(
             '--phase', type=str, default='train', help='train, val, test, etc')
         self.parser.add_argument(
-            '--niter', type=int, default=50, help='# of iter at starting learning rate')
+            '--niter', type=int, default=70, help='# of iter at starting learning rate')
         self.parser.add_argument('--niter_decay', type=int, default=50,
                                  help='# of iter to linearly decay learning rate to zero')
         self.parser.add_argument(
@@ -104,7 +104,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument(
             '--squaretv_weight', type=float, default=1)
 
-        self.parser.add_argument('--mask_epoch', type=int, default=-1)
+        self.parser.add_argument('--mask_epoch', type=int, default=70)
         self.parser.add_argument('--no_dynamic_mask', action='store_true')
 
         self.parser.add_argument('--resolution', type=int, default=512)
