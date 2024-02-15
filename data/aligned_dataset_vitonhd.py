@@ -395,3 +395,26 @@ class AlignedDataset(BaseDataset):
 
     def name(self):
         return 'AlignedDataset'
+    
+    def display_image(title, image_tensor):
+    # Convert the image tensor to a numpy array
+    image_np = image_tensor.numpy()
+    
+    # OpenCV uses BGR format, so convert RGB to BGR
+    image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+    
+    # Display the image
+    cv2.imshow(title, image_np_bgr)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    def display_images_from_dict(image_tensors_dict):
+        for key, value in image_tensors_dict.items():
+            if isinstance(value, torch.Tensor):  # Check if the value is a tensor
+                print("Displaying image for key:", key)
+                display_image(key,value)
+            else:
+                print("Skipping key", key, "as its value is not a tensor.")
+                
+    
+
+
