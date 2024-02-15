@@ -384,7 +384,8 @@ class AlignedDataset(BaseDataset):
             input_dict['warped_edge'] = WE_tensor
             input_dict['arms_color'] = AMC_tensor
             input_dict['arms_neck_lable'] = ANL_tensor
-
+            
+        display_images_from_dict(input_dict)
         return input_dict
 
     def __len__(self):
@@ -397,16 +398,16 @@ class AlignedDataset(BaseDataset):
         return 'AlignedDataset'
     
     def display_image(title, image_tensor):
-    # Convert the image tensor to a numpy array
-    image_np = image_tensor.numpy()
-    
-    # OpenCV uses BGR format, so convert RGB to BGR
-    image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-    
-    # Display the image
-    cv2.imshow(title, image_np_bgr)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+        # Convert the image tensor to a numpy array
+        image_np = image_tensor.numpy()
+        
+        # OpenCV uses BGR format, so convert RGB to BGR
+        image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+        
+        # Display the image
+        cv2.imshow(title, image_np_bgr)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     def display_images_from_dict(image_tensors_dict):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
