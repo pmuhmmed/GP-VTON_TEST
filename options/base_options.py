@@ -20,16 +20,16 @@ class BaseOptions():
         self.parser.add_argument('--verbose', action='store_true', default=False, help='toggles verbose')
 
         # input/output sizes       
-        self.parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
+        self.parser.add_argument('--batchSize', type=int, default=2, help='input batch size')
         self.parser.add_argument('--loadSize', type=int, default=512, help='scale images to this size')
         self.parser.add_argument('--fineSize', type=int, default=512, help='then crop to this size')
-        self.parser.add_argument('--label_nc', type=int, default=20, help='# of input label channels')
+        self.parser.add_argument('--label_nc', type=int, default=14, help='# of input label channels')
         self.parser.add_argument('--input_nc', type=int, default=3, help='# of input image channels')
         self.parser.add_argument('--output_nc', type=int, default=3, help='# of output image channels')
 
         # for setting inputs
-        self.parser.add_argument('--dataroot', type=str,default='dataset/VITON_traindata/')
-        self.parser.add_argument('--resize_or_crop', type=str, default='scale_width', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
+        self.parser.add_argument('--dataroot', type=str,default='/kaggle/input/gp-vton-dataset/VITON-HD/VITON-HD')
+        self.parser.add_argument('--resize_or_crop', type=str, default='none', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
         self.parser.add_argument('--serial_batches', action='store_true', help='if true, takes images in order to make batches, otherwise takes them randomly')        
         self.parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data argumentation') 
         self.parser.add_argument('--nThreads', default=1, type=int, help='# threads for loading data')                
@@ -50,7 +50,7 @@ class BaseOptions():
         self.parser.add_argument('--niter_fix_global', type=int, default=0, help='number of epochs that we only train the outmost local enhancer')        
         self.parser.add_argument('--tv_weight', type=float, default=0.1, help='weight for TV loss')
 
-        self.parser.add_argument('--image_pairs_txt', type=str, default='train_pair.txt')
+        self.parser.add_argument('--image_pairs_txt', type=str, default='/kaggle/input/gp-vton-dataset/VITON-HD/VITON-HD/train_pairs_1018.txt')
 
         self.initialized = True
 
