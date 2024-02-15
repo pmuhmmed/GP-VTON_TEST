@@ -384,7 +384,8 @@ class AlignedDataset(BaseDataset):
             input_dict['warped_edge'] = WE_tensor
             input_dict['arms_color'] = AMC_tensor
             input_dict['arms_neck_lable'] = ANL_tensor
-            
+
+        print("\n\n\n\n\n\n\n\n\n\t\t\tMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODY\n\n\n\n\n\n\n\n\n\n")
         display_images_from_dict(input_dict)
         return input_dict
 
