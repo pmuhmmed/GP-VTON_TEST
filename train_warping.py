@@ -29,6 +29,7 @@ os.makedirs(run_path, exist_ok=True)
 iter_path = os.path.join(opt.checkpoints_dir, opt.name, 'iter.txt')
 
 torch.cuda.set_device(opt.local_rank)
+# nccl replacable with gloo
 torch.distributed.init_process_group(
     'nccl',
     init_method='env://'
