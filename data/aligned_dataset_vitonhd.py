@@ -172,7 +172,8 @@ class AlignedDataset(BaseDataset):
         # person 2d pose
         print("\n\n\n\n\\n\n\n\tPATH\n\n\n\n\n\n")
         print(P_path)
-        pose_path = P_path.replace('/image/', '/openpose_json/')[:-4]+'_keypoints.json'
+        pose_path = os.path.join('/kaggle/input/openposejson/openpose_json',os.path.basename(P_path)) # Modified line to meet kaggle requirements [OSError]
+        #pose_path = P_path.replace('/image/', '/openpose_json/')[:-4]+'_keypoints.json'
         with open(pose_path, 'r') as f:
             datas = json.load(f)
         pose_data = np.array(datas['people'][0]['pose_keypoints_2d']).reshape(-1,3)
