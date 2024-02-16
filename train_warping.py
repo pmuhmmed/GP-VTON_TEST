@@ -37,10 +37,12 @@ torch.distributed.init_process_group(
 device = torch.device(f'cuda:{opt.local_rank}')
 
 train_data = CreateDataset(opt)
-# train_sampler = DistributedSampler(train_data)
-# train_loader = DataLoader(train_data, batch_size=opt.batchSize, shuffle=False,
-#                           num_workers=4, pin_memory=True, sampler=train_sampler)
-# dataset_size = len(train_loader)
+print("\n\n\n\n\n\n\n\t\t\t\tHELP\n\n\n\n\n\n\n")
+train_data[0]
+train_sampler = DistributedSampler(train_data)
+train_loader = DataLoader(train_data, batch_size=opt.batchSize, shuffle=False,
+                           num_workers=4, pin_memory=True, sampler=train_sampler)
+dataset_size = len(train_loader)
 
 # warp_model = AFWM_Vitonhd_lrarms(opt, 51)
 # warp_model.train()
