@@ -170,6 +170,8 @@ class AlignedDataset(BaseDataset):
         P_tensor = transform_for_rgb(P)
 
         # person 2d pose
+        print("\n\n\n\n\\n\n\n\tPATH\n\n\n\n\n\n")
+        print(P_path)
         pose_path = P_path.replace('/image/', '/openpose_json/')[:-4]+'_keypoints.json'
         with open(pose_path, 'r') as f:
             datas = json.load(f)
