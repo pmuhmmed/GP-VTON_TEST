@@ -173,8 +173,8 @@ class AlignedDataset(BaseDataset):
         print("\n\n\n\n\\n\n\n\tPATH\n\n\n\n\n\n")
         print(P_path)
         base_path = os.path.basename(P_path)
-        base_path_json = base_path.replace(".png",".json")
-        pose_path = os.path.join('/kaggle/input/openposejson/openpose_json',base_path_json) # Modified line to meet kaggle requirements [OSError]
+        base_path_json = base_path.replace(".png","")
+        pose_path = os.path.join('/kaggle/input/openposejson/openpose_json',base_path_json, '_keypoints.json') # Modified line to meet kaggle requirements [OSError]
         #pose_path = P_path.replace('/image/', '/openpose_json/')[:-4]+'_keypoints.json'
         with open(pose_path, 'r') as f:
             datas = json.load(f)
