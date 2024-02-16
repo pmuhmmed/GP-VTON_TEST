@@ -22,11 +22,11 @@ def CreateDataset(opt):
 
 opt = TrainOptions().parse()
 
-run_path = 'runs/'+opt.name
-sample_path = 'sample/'+opt.name
-os.makedirs(sample_path, exist_ok=True)
-os.makedirs(run_path, exist_ok=True)
-iter_path = os.path.join(opt.checkpoints_dir, opt.name, 'iter.txt')
+run_path = 'kaggle/working/runs/'+opt.name
+sample_path = 'sample/'+opt.name 
+#os.makedirs(sample_path, exist_ok=True) never used in this code !!!!
+os.makedirs(run_path, exist_ok=True) # tensorboardX  for SummaryWriter directory path
+#iter_path = os.path.join(opt.checkpoints_dir, opt.name, 'iter.txt') # Never used in this code??!!
 
 torch.cuda.set_device(opt.local_rank)
 # nccl replacable with gloo
