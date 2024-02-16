@@ -172,7 +172,7 @@ class AlignedDataset(BaseDataset):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
                 print("Displaying image for key:", key)
-                display_image(key,value)
+                self.display_image(key,value)
             else:
                 print("Skipping key", key, "as its value is not a tensor.")
 
