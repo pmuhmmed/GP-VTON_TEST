@@ -157,7 +157,7 @@ class AlignedDataset(BaseDataset):
         return palm_mask
 
 
-    def display_image(title, image_tensor):
+    def display_image(self,title, image_tensor):
         # Convert the image tensor to a numpy array
         image_np = image_tensor.numpy()
         
@@ -165,7 +165,7 @@ class AlignedDataset(BaseDataset):
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         # Display the image
-        cv2.imshow(title, image_np_bgr)
+        cv2.imshow(self,title, image_np_bgr)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     def display_images_from_dict(image_tensors_dict):
