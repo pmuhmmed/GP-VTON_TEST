@@ -165,10 +165,10 @@ class AlignedDataset(BaseDataset):
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         # Display the image
-        cv2.imshow(self,title, image_np_bgr)
+        cv2.imshow(title, image_np_bgr)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-    def display_images_from_dict(image_tensors_dict):
+    def display_images_from_dict(slef, image_tensors_dict):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
                 print("Displaying image for key:", key)
