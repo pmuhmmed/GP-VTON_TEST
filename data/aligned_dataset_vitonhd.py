@@ -157,19 +157,26 @@ class AlignedDataset(BaseDataset):
         return palm_mask
 
 
-    def display_image(self,title, image_tensor):
+    def display_image(self, title, image_tensor):
         # Convert the image tensor to a numpy array
         image_np = image_tensor.numpy()
         
-        # OpenCV uses BGR format, so convert RGB to BGR
-        print(f"\n\n\n IMAGE_SHAPE == {image_np.shape}")
-        image_np_trans = np.transpose(image_np, (1, 2, 0))
-        image_np_bgr = cv2.cvtColor(image_np_trans, cv2.COLOR_RGB2BGR)
+        # Transpose the axes to reorder the dimensions
+        image_np = np.transpose(image_np, (1, 2, 0))  # Assuming (3, height, width) -> (height, width, 3)
         
-        # Display the image
-        cv2.imshow(title, image_np_bgr)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # OpenCV uses BGR format, so convert RGB to BGR
+        image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+        
+        # Save the image to a file
+        filename = "/kaggle/working/" + title + '.png'
+        cv2.imwrite(filename, image_np_bgr)
+        
+        # Display the image using Kaggle's display utilities
+        #img = plt.imread(filename)
+        #plt.imshow(img)
+        #plt.axis('off')
+        #plt.show()
+
     def display_images_from_dict(self, image_tensors_dict):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
