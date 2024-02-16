@@ -411,7 +411,7 @@ class AlignedDataset(BaseDataset):
             input_dict['arms_neck_lable'] = ANL_tensor
 
         print("\n\n\n\n\n\n\n\n\n\t\t\tMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODY\n\n\n\n\n\n\n\n\n\n")
-        display_images_from_dict(input_dict)
+        self.display_images_from_dict(input_dict)
         return input_dict
 
     def __len__(self):
