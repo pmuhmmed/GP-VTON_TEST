@@ -163,15 +163,17 @@ class AlignedDataset(BaseDataset):
         
         # Transpose the axes to reorder the dimensions
         image_np = np.transpose(image_np, (1, 2, 0))  # Assuming (3, height, width) -> (height, width, 3)
-
-        print(image_np)
+    
+        # Normalize the image data to the range [0, 255]
+        image_np = (image_np * 255).astype(np.uint8)
+    
         # OpenCV uses BGR format, so convert RGB to BGR
-        print(f"\n\n\n\t\t IMG_SHAPE == {image_np.shape}\n\n")
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-        
+    
         # Save the image to a file
         filename = "/kaggle/working/" + title + '.png'
         cv2.imwrite(filename, image_np_bgr)
+
         
         # Display the image using Kaggle's display utilities
         #img = plt.imread(filename)
