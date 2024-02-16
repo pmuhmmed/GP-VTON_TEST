@@ -162,6 +162,7 @@ class AlignedDataset(BaseDataset):
         image_np = image_tensor.numpy()
         
         # OpenCV uses BGR format, so convert RGB to BGR
+        print(f"\n\n\n IMAGE_SHAPE == {image_np.shape}")
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         # Display the image
