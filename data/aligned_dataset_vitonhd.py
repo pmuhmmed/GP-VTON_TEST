@@ -165,6 +165,7 @@ class AlignedDataset(BaseDataset):
         image_np = np.transpose(image_np, (1, 2, 0))  # Assuming (3, height, width) -> (height, width, 3)
         
         # OpenCV uses BGR format, so convert RGB to BGR
+        print(f"\n\n\n\t\t IMG_SHAPE == {image_np.shape}\n\n")
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         # Save the image to a file
