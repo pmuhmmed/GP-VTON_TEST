@@ -38,7 +38,7 @@ device = torch.device(f'cuda:{opt.local_rank}')
 
 train_data = CreateDataset(opt)
 print("\n\n\n\n\n\n\n\t\t\t\tHELP\n\n\n\n\n\n\n")
-train_data[0]
+train_data[1]
 train_sampler = DistributedSampler(train_data)
 train_loader = DataLoader(train_data, batch_size=opt.batchSize, shuffle=False,
                            num_workers=4, pin_memory=True, sampler=train_sampler)
