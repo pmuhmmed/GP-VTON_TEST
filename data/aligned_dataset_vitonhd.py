@@ -171,7 +171,7 @@ class AlignedDataset(BaseDataset):
         image_np_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
     
         # Save the image to a file
-        filename = "/kaggle/working/" + title + '.png'
+        filename = "/kaggle/working/dataset_images/" + title + '.png'
         cv2.imwrite(filename, image_np_bgr)
 
 
@@ -205,7 +205,7 @@ class AlignedDataset(BaseDataset):
         image_np_bgr = cv2.cvtColor(combined_image, cv2.COLOR_RGB2BGR)
     
         # Save the image to a file
-        filename = "/kaggle/working/" + title + '.png'
+        filename = "/kaggle/working/dataset_images/" + title + '.png'
         cv2.imwrite(filename, image_np_bgr)
 
     def display_images_from_dict(self, image_tensors_dict):
