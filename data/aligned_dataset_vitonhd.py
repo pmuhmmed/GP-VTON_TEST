@@ -203,7 +203,7 @@ class AlignedDataset(BaseDataset):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
                 print("Displaying image for key:", key)
-                if (value.shape[0] == 3)
+                if value.shape[0] == 3:
                     self.display_image(key,value)
                 else:
                     self.display_high_dim_image(key,value)
