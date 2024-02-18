@@ -174,18 +174,39 @@ class AlignedDataset(BaseDataset):
         filename = "/kaggle/working/" + title + '.png'
         cv2.imwrite(filename, image_np_bgr)
 
-        
-        # Display the image using Kaggle's display utilities
-        #img = plt.imread(filename)
-        #plt.imshow(img)
-        #plt.axis('off')
-        #plt.show()
+
+    def display_high_dim_image(self,title, image_tensor):
+        # Convert the image tensor to a numpy array
+        image_np = image_tensor.numpy()
+    
+        # Assuming the shape of the image is (25, height, width)
+        num_channels, height, width = image_np.shape
+    
+        # Merge the channels into a single RGB image
+        combined_image = np.zeros((height, width, 3), dtype=np.uint8)
+    
+        # Normalize pixel values in each channel to the range [0, 255]
+        for i in range(num_channels):
+            channel = image_np[i]
+            # Normalize values to [0, 255]
+            normalized_channel = (channel - np.min(channel)) / (np.max(channel) - np.min(channel)) * 255
+            # Assign the normalized channel to the corresponding RGB channel
+            combined_image[:, :, i % 3] += normalized_channel.astype(np.uint8)
+        # OpenCV uses BGR format, so convert RGB to BGR
+        image_np_bgr = cv2.cvtColor(combined_image, cv2.COLOR_RGB2BGR)
+    
+        # Save the image to a file
+        filename = "/kaggle/working/" + title + '.png'
+        cv2.imwrite(filename, image_np_bgr)
 
     def display_images_from_dict(self, image_tensors_dict):
         for key, value in image_tensors_dict.items():
             if isinstance(value, torch.Tensor):  # Check if the value is a tensor
                 print("Displaying image for key:", key)
-                self.display_image(key,value)
+                if (value.shape[0] == 3)
+                    self.display_image(key,value)
+                else:
+                    self.display_high_dim_image(key,value)
             else:
                 print("Skipping key", key, "as its value is not a tensor.")
 
