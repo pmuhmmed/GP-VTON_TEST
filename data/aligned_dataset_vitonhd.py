@@ -188,10 +188,19 @@ class AlignedDataset(BaseDataset):
         # Normalize pixel values in each channel to the range [0, 255]
         for i in range(num_channels):
             channel = image_np[i]
+            
+            # Replace NaN and infinite values with 0
+            channel = np.nan_to_num(channel, nan=0, posinf=0, neginf=0)
+
             # Normalize values to [0, 255]
             normalized_channel = (channel - np.min(channel)) / (np.max(channel) - np.min(channel)) * 255
+            # Handle cases where min and max are equal (resulting in division by zero)
+            normalized_channel[np.isnan(normalized_channel)] = 0
+            
             # Assign the normalized channel to the corresponding RGB channel
+            # Note: "combined_image" is 3D np array, but combined_image[:, :, 0] is a 2D Red sliced channel  and the same for Green and blue channels indexed with 1,2
             combined_image[:, :, i % 3] += normalized_channel.astype(np.uint8)
+            
         # OpenCV uses BGR format, so convert RGB to BGR
         image_np_bgr = cv2.cvtColor(combined_image, cv2.COLOR_RGB2BGR)
     
