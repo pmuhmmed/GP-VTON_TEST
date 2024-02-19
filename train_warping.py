@@ -101,80 +101,81 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         total_steps += 1
         epoch_iter += 1
+        
+        Target_garment_binary_mask = data['Target_garment_binary_mask']
+        Target_garment_RGB = data['Target_garment_RGB']
+        Target_garment_RGB = Target_garment_RGB * Target_garment_binary_mask
+        person_clothes_mask = data['person_clothes_mask']
+        person_image_RGB = data['person_image_RGB']
+        person_clothes_RGB = person_image_RGB * person_clothes_mask
 
-        pre_clothes_edge = data['edge']
-        clothes = data['color']
-        clothes = clothes * pre_clothes_edge
-        person_clothes_edge = data['person_clothes_mask']
-        real_image = data['image']
-        person_clothes = real_image * person_clothes_edge
+        human_pose_estiamtion_keypoints = data['human_pose_estiamtion_keypoints']
 
-        pose = data['pose']
+        four_dimension_tensor_size = data['Target_garment_RGB'].size()
+        # important Note: that the "four_dimension_tensor_size" contains in the first index the batch number, in the second the number of channels, and in the third and fourth the image dimension.
+        oneHot_size1 = (four_dimension_tensor_size[0], 25, four_dimension_tensor_size[2], four_dimension_tensor_size[3])
+        human_densepose = torch.cuda.FloatTensor(torch.Size(oneHot_size1)).zero_()
+        human_densepose = human_densepose.scatter_(1,data['human_densepose'].data.long().cuda(),1.0)
+        human_densepose = human_densepose * 2.0 - 1.0
+        densepose_fore = data['human_densepose']/24.0
 
-        size = data['color'].size()
-        oneHot_size1 = (size[0], 25, size[2], size[3])
-        densepose = torch.cuda.FloatTensor(torch.Size(oneHot_size1)).zero_()
-        densepose = densepose.scatter_(1,data['densepose'].data.long().cuda(),1.0)
-        densepose = densepose * 2.0 - 1.0
-        densepose_fore = data['densepose']/24.0
+        target_garment_left_sleeve_binary_mask = data['target_grament_left_part_binary_mask']
+        target_garment_torso_binary_mask = data['target_garment_middle_part_binary_mask']
+        target_garment_right_sleeve_binary_mask = data['target_garment_right_part_binary_mask']
 
-        left_cloth_sleeve_mask = data['flat_clothes_left_mask']
-        cloth_torso_mask = data['flat_clothes_middle_mask']
-        right_cloth_sleeve_mask = data['flat_clothes_right_mask']
-
-        part_mask = torch.cat([left_cloth_sleeve_mask,cloth_torso_mask,right_cloth_sleeve_mask],0)
+        part_mask = torch.cat([target_garment_left_sleeve_binary_mask,target_garment_torso_binary_mask,target_garment_right_sleeve_binary_mask],0)
         part_mask = (torch.sum(part_mask,dim=(2,3),keepdim=True)>0).float().cuda()
-
-        clothes_left = clothes * left_cloth_sleeve_mask
-        clothes_torso = clothes * cloth_torso_mask
-        clothes_right = clothes * right_cloth_sleeve_mask
+        
+        clothes_left_RGB = Target_garment_RGB * target_garment_left_sleeve_binary_mask
+        clothes_torso_RGB = Target_garment_RGB * target_garment_torso_binary_mask
+        clothes_right_RGB = Target_garment_RGB * target_garment_right_sleeve_binary_mask
  
-        cloth_parse_for_d = data['flat_clothes_label'].cuda()
-        cloth_parse_vis = torch.cat([cloth_parse_for_d,cloth_parse_for_d,cloth_parse_for_d],1)
+        target_garment_labeled = data['target_garment_labeled'].cuda()
+        cloth_parse_vis = torch.cat([target_garment_labeled,target_garment_labeled,target_garment_labeled],1)
 
         person_clothes_left_sleeve_mask = data['person_clothes_left_mask']
         person_clothes_torso_mask = data['person_clothes_middle_mask']
         person_clothes_right_sleeve_mask = data['person_clothes_right_mask']
         person_clothes_mask_concate = torch.cat([person_clothes_left_sleeve_mask,person_clothes_torso_mask,person_clothes_right_sleeve_mask],0)
 
-        seg_label_tensor = data['seg_gt']
-        seg_gt_tensor = (seg_label_tensor / 6 * 2 -1).float()
-        seg_label_onehot_tensor = data['seg_gt_onehot'] * 2 - 1.0
+        human_body_parts_segmented_labeled = data['human_body_parts_segmented_labeled']
+        seg_gt_tensor = (human_body_parts_segmented_labeled / 6 * 2 -1).float()
+        human_body_parts_one_hot_encoded = data['human_body_parts_one_hot_encoded'] * 2 - 1.0
 
-        seg_label_tensor = seg_label_tensor.cuda()
+        human_body_parts_segmented_labeled = human_body_parts_segmented_labeled.cuda()
         seg_gt_tensor = seg_gt_tensor.cuda()
-        seg_label_onehot_tensor = seg_label_onehot_tensor.cuda()
+        human_body_parts_one_hot_encoded = human_body_parts_one_hot_encoded.cuda()
 
-        person_clothes = person_clothes.cuda()
-        person_clothes_edge = person_clothes_edge.cuda()
-        pose = pose.cuda()
+        person_clothes_RGB = person_clothes_RGB.cuda()
+        person_clothes_mask = person_clothes_mask.cuda()
+        human_pose_estiamtion_keypoints = human_pose_estiamtion_keypoints.cuda()
 
-        clothes = clothes.cuda()
-        clothes_left = clothes_left.cuda()
-        clothes_torso = clothes_torso.cuda()
-        clothes_right = clothes_right.cuda()
-        pre_clothes_edge = pre_clothes_edge.cuda()
-        left_cloth_sleeve_mask = left_cloth_sleeve_mask.cuda()
-        cloth_torso_mask = cloth_torso_mask.cuda()
-        right_cloth_sleeve_mask = right_cloth_sleeve_mask.cuda()
+        Target_garment_RGB = Target_garment_RGB.cuda()
+        clothes_left_RGB = clothes_left_RGB.cuda()
+        clothes_torso_RGB = clothes_torso_RGB.cuda()
+        clothes_right_RGB = clothes_right_RGB.cuda()
+        Target_garment_binary_mask = Target_garment_binary_mask.cuda()
+        target_garment_left_sleeve_binary_mask = target_garment_left_sleeve_binary_mask.cuda()
+        target_garment_torso_binary_mask = target_garment_torso_binary_mask.cuda()
+        target_garment_right_sleeve_binary_mask = target_garment_right_sleeve_binary_mask.cuda()
 
         person_clothes_left_sleeve_mask = person_clothes_left_sleeve_mask.cuda()
         person_clothes_torso_mask = person_clothes_torso_mask.cuda()
         person_clothes_right_sleeve_mask = person_clothes_right_sleeve_mask.cuda()
         person_clothes_mask_concate = person_clothes_mask_concate.cuda()
-        person_clothes_left_sleeve = person_clothes * person_clothes_left_sleeve_mask
-        person_clothes_torso = person_clothes * person_clothes_torso_mask
-        person_clothes_right_sleeve = person_clothes * person_clothes_right_sleeve_mask
+        person_clothes_left_sleeve = person_clothes_RGB * person_clothes_left_sleeve_mask
+        person_clothes_torso = person_clothes_RGB * person_clothes_torso_mask
+        person_clothes_right_sleeve = person_clothes_RGB * person_clothes_right_sleeve_mask
 
-        preserve_mask = data['preserve_mask'].cuda()
-        preserve_mask2 = data['preserve_mask2'].cuda()
-        preserve_mask3 = data['preserve_mask3'].cuda()
+        human_preserved_regions_binary_mask = data['human_preserved_regions_binary_mask'].cuda()
+        human_preserved_regions_binary_mask2 = data['human_preserved_regions_binary_mask2'].cuda()
+        human_preserved_regions_binary_mask3 = data['human_preserved_regions_binary_mask3'].cuda()
 
-        concat = torch.cat([densepose, pose, preserve_mask3], 1)
-        flow_out = model(concat, clothes, pre_clothes_edge, cloth_parse_for_d, \
-                        clothes_left, clothes_torso, clothes_right, \
-                        left_cloth_sleeve_mask, cloth_torso_mask, right_cloth_sleeve_mask, \
-                        preserve_mask3)
+        concat = torch.cat([human_densepose, human_pose_estiamtion_keypoints, human_preserved_regions_binary_mask3], 1)
+        flow_out = model(concat, Target_garment_RGB, Target_garment_binary_mask, target_garment_labeled, \
+                        clothes_left_RGB, clothes_torso_RGB, clothes_right_RGB, \
+                        target_garment_left_sleeve_binary_mask, target_garment_torso_binary_mask, target_garment_right_sleeve_binary_mask, \
+                        human_preserved_regions_binary_mask3)
 
         last_flow, last_flow_all, delta_list, x_all, x_edge_all, delta_x_all, delta_y_all, \
             x_full_all, x_edge_full_all, attention_all, seg_list = flow_out
@@ -183,9 +184,9 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         set_requires_grad(discriminator, True)
         optimizer_D.zero_grad()
         pred_seg_D = seg_list[-1]
-        D_concat = torch.cat([concat, cloth_parse_for_d.cuda()],1)
+        D_concat = torch.cat([concat, target_garment_labeled.cuda()],1)
         D_in_fake = torch.cat([D_concat, pred_seg_D.detach()], 1)
-        D_in_real = torch.cat([D_concat, seg_label_onehot_tensor], 1)
+        D_in_real = torch.cat([D_concat, human_body_parts_one_hot_encoded], 1)
         loss_gan_D = (criterionLSGANloss(discriminator(
             D_in_fake), False) + criterionLSGANloss(discriminator(D_in_real), True)) * 0.5 * 0.1
         loss_gan_D.backward()
@@ -196,7 +197,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         loss_gan_G = criterionLSGANloss(
             discriminator(D_in_fake_G), True)* 0.1
 
-        bz = pose.size(0)
+        bz = human_pose_estiamtion_keypoints.size(0)
 
         epsilon = 0.001
         loss_smooth = 0
@@ -221,7 +222,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         for num in range(5):
             cur_seg_label_tensor = F.interpolate(
-                seg_label_tensor, scale_factor=0.5**(4-num), mode='nearest').cuda()
+                human_body_parts_segmented_labeled, scale_factor=0.5**(4-num), mode='nearest').cuda()
 
             pred_seg = seg_list[num]
             loss_seg_ce = criterionCE(pred_seg, cur_seg_label_tensor.long()[:,0,...])
@@ -247,8 +248,8 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             pred_clothes = x_all[num]
             pred_edge = x_edge_all[num]
 
-            cur_preserve_mask = F.interpolate(preserve_mask, scale_factor=0.5**(4-num), mode='bilinear')
-            cur_preserve_mask2 = F.interpolate(preserve_mask2, scale_factor=0.5**(4-num), mode='bilinear')
+            cur_preserve_mask = F.interpolate(human_preserved_regions_binary_mask, scale_factor=0.5**(4-num), mode='bilinear')
+            cur_preserve_mask2 = F.interpolate(human_preserved_regions_binary_mask2, scale_factor=0.5**(4-num), mode='bilinear')
             cur_preserve_mask_concate = torch.cat([cur_preserve_mask,cur_preserve_mask2,cur_preserve_mask],0)
             zero_mask = torch.zeros_like(cur_preserve_mask)
             cur_person_clothes_mask_concate = torch.cat([cur_person_clothes_torso_mask,cur_person_clothes_left_sleeve_mask+cur_person_clothes_right_sleeve_mask,cur_person_clothes_torso_mask],0)
@@ -263,8 +264,8 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             loss_vgg = criterionVGG(pred_clothes*part_mask, cur_person_clothes*part_mask)
             loss_edge = criterionL1(pred_edge*part_mask, cur_person_clothes_edge*part_mask)
 
-            cur_person_clothes_full = F.interpolate(person_clothes, scale_factor=0.5**(4-num), mode='bilinear')
-            cur_person_clothes_edge_full = F.interpolate(person_clothes_edge, scale_factor=0.5**(4-num), mode='bilinear')
+            cur_person_clothes_full = F.interpolate(person_clothes_RGB, scale_factor=0.5**(4-num), mode='bilinear')
+            cur_person_clothes_edge_full = F.interpolate(person_clothes_mask, scale_factor=0.5**(4-num), mode='bilinear')
 
             pred_clothes_full = x_full_all[num]
             pred_edge_full = x_edge_full_all[num]
@@ -333,7 +334,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         optimizer_warp.step()
         ############## Display results and errors ##########
         
-        bz = real_image.size(0)
+        bz = person_image_RGB.size(0)
         
         warped_cloth = x_all[4]
         left_warped_cloth = warped_cloth[0:bz]
@@ -345,14 +346,14 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         if step % opt.display_freq == 0:
             if opt.local_rank == 0:
-                a = real_image.float().cuda()
-                b = person_clothes.cuda()
-                c = clothes.cuda()
+                a = person_image_RGB.float().cuda()
+                b = person_clothes_RGB.cuda()
+                c = Target_garment_RGB.cuda()
                 d = torch.cat([densepose_fore.cuda(),densepose_fore.cuda(),densepose_fore.cuda()],1)
                 cm = cloth_parse_vis.cuda()
                 e = warped_cloth
 
-                bz = pose.size(0)
+                bz = human_pose_estiamtion_keypoints.size(0)
                 seg_preds = torch.argmax(softmax(seg_list[-1]),dim=1)[:,None,...].float()
                 left_mask = (seg_preds==1).float()
                 torso_mask = (seg_preds==2).float()
@@ -361,7 +362,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
                 warped_cloth_fusion = left_warped_cloth * left_mask + \
                                     torso_warped_cloth * torso_mask + \
                                     right_warped_cloth * right_mask
-                warped_cloth_fusion = warped_cloth_fusion *  (1-preserve_mask)
+                warped_cloth_fusion = warped_cloth_fusion *  (1-human_preserved_regions_binary_mask)
                 eee = warped_cloth_fusion
 
                 fused_attention = attention_all[-1]
@@ -369,12 +370,12 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
                 torso_atten = fused_attention[:,1:2,...]
                 right_atten = fused_attention[:,2:3,...]
 
-                vis_pose = (pose > 0).float()
+                vis_pose = (human_pose_estiamtion_keypoints > 0).float()
                 vis_pose = torch.sum(vis_pose.cuda(), dim=1).unsqueeze(1)
                 g = torch.cat([vis_pose, vis_pose, vis_pose], 1)
 
-                h = torch.cat([preserve_mask, preserve_mask, preserve_mask], 1)
-                h2 = torch.cat([preserve_mask2, preserve_mask2, preserve_mask2], 1)
+                h = torch.cat([human_preserved_regions_binary_mask, human_preserved_regions_binary_mask, human_preserved_regions_binary_mask], 1)
+                h2 = torch.cat([human_preserved_regions_binary_mask2, human_preserved_regions_binary_mask2, human_preserved_regions_binary_mask2], 1)
 
                 seg_gt_vis = torch.cat([seg_gt_tensor,seg_gt_tensor,seg_gt_tensor],1).cuda()
                 seg_preds = torch.argmax(softmax(seg_list[-1]),dim=1)[:,None,...].float()
