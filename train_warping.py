@@ -173,14 +173,14 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         human_preserved_regions_binary_mask2 = data['human_preserved_regions_binary_mask2'].cuda()
         human_preserved_regions_binary_mask3 = data['human_preserved_regions_binary_mask3'].cuda()
 
-        concat = torch.cat([human_densepose, human_pose_estiamtion_keypoints, human_preserved_regions_binary_mask3], 1)
-        flow_out = model(concat, Target_garment_RGB, Target_garment_binary_mask, target_garment_labeled, \
-                        clothes_left_RGB, clothes_torso_RGB, clothes_right_RGB, \
-                        target_garment_left_sleeve_binary_mask, target_garment_torso_binary_mask, target_garment_right_sleeve_binary_mask, \
-                        human_preserved_regions_binary_mask3)
+        # concat = torch.cat([human_densepose, human_pose_estiamtion_keypoints, human_preserved_regions_binary_mask3], 1)
+        # flow_out = model(concat, Target_garment_RGB, Target_garment_binary_mask, target_garment_labeled, \
+        #                 clothes_left_RGB, clothes_torso_RGB, clothes_right_RGB, \
+        #                 target_garment_left_sleeve_binary_mask, target_garment_torso_binary_mask, target_garment_right_sleeve_binary_mask, \
+        #                 human_preserved_regions_binary_mask3)
 
-        last_flow, last_flow_all, delta_list, x_all, x_edge_all, delta_x_all, delta_y_all, \
-            x_full_all, x_edge_full_all, attention_all, seg_list = flow_out
+        # last_flow, last_flow_all, delta_list, x_all, x_edge_all, delta_x_all, delta_y_all, \
+        #     x_full_all, x_edge_full_all, attention_all, seg_list = flow_out
         printf("we done here")
         break
 
